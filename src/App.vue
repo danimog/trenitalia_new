@@ -53,7 +53,11 @@
         </b-table>
 
         <hr>
+          
         <h4>Prossimi TRENI nella stazione di ... </h4>
+        
+        <b-form-select v-model="myStazione" :options="infoStazioni" @change="onChange()"></b-form-select>
+
         <b-table striped :items="this.itemStazione">
           <template #cell(orario)="data">
                 {{timeConverter(data.item.orario)}}
@@ -91,6 +95,7 @@ export default {
       stazione_arrivo: 'Stazione di arrivo: ',
       urlStazione: '',
       infoStazione: '',
+      myStazione: '',
       form: {
         stazione_partenza: '',
         stazione_arrivo: '',
@@ -164,23 +169,6 @@ export default {
                         dettaglio_treno: x.trainlist[0].trainidentifier,
               }))
             })
-            let vernazza = 'S04733'
-            this.urlStazione = 'http://www.viaggiatreno.it/viaggiatrenonew/resteasy/viaggiatreno/partenze/'+vernazza+'/'+this.nowgmt;
-
-            axios
-              .get(`${PROXY}/`+this.urlStazione)
-              .then(result => {
-                this.infoStazione = result.data;
-                this.itemStazione = this.infoStazione.map(y => ({
-                    destinazione: y.destinazione,
-                    orario: y.orarioPartenza,
-                    numeroTreno: y.numeroTreno
-
-                }));
-                
-              })
-
-
         }
 
         
@@ -192,6 +180,26 @@ export default {
       this.form.stazione_partenza = ''
       this.form.stazione_arrivo = ''
       
+    },
+    onChange(){
+      console.log("------> "+this.myStazione);
+      this.urlStazione = 'http://www.viaggiatreno.it/viaggiatrenonew/resteasy/viaggiatreno/partenze/'+this.myStazione+'/'+this.nowgmt;
+      const MYPROXY = window.location.hostname === "localhost"
+        ? "https://cors-anywhere.herokuapp.com"
+        : "/cors-proxy";
+
+      axios
+        .get(`${MYPROXY}/`+this.urlStazione)
+        .then(result => {
+          this.infoStazione = result.data;
+          this.itemStazione = this.infoStazione.map(y => ({
+              destinazione: y.destinazione,
+              orario: y.orarioPartenza,
+              numeroTreno: y.numeroTreno
+
+          }));
+          
+        })
     },
     timeConverter(UNIX_timestamp){
       // let orario = new Date(UNIX_timestamp).toLocaleTimeString("it-IT")  
