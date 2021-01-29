@@ -194,7 +194,9 @@ export default {
       
     },
     timeConverter(UNIX_timestamp){
-      let orario = new Date(UNIX_timestamp).toLocaleTimeString("it-IT")  
+      // let orario = new Date(UNIX_timestamp).toLocaleTimeString("it-IT")  
+      let orario = new Date(UNIX_timestamp).getHours()+":"+new Date(UNIX_timestamp).getMinutes();
+      
       return orario;
     },
     dateConverter(UNIX_timestamp){
