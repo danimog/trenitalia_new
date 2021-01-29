@@ -52,7 +52,14 @@
           </template>
         </b-table>
 
-       
+        <hr>
+        <h4>Prossimi TRENI nella stazione di ... </h4>
+        <b-table striped :items="this.itemStazione">
+          <template #cell(orario)="data">
+                {{timeConverter(data.item.orario)}}
+          </template>
+        </b-table>
+
         <!-- <ul class="mt-3">
           <li class="myli" v-for="dati in this.info" :key="dati.id">
             <span v-if="dati.saleable">
@@ -82,6 +89,8 @@ export default {
     return {
       stazione_partenza: 'Stazione di partenza: ',
       stazione_arrivo: 'Stazione di arrivo: ',
+      urlStazione: '',
+      infoStazione: '',
       form: {
         stazione_partenza: '',
         stazione_arrivo: '',
@@ -101,6 +110,7 @@ export default {
       myUrl: '',
       info: '',
       items:'',
+      itemStazione: '',
       fields: [
         'Ora partenza',
         'Ora arrivo',
@@ -127,14 +137,9 @@ export default {
           this.form.stazione_arrivo+'&arflag=A&adate='+this.adate+'&atime='+this.atime+
           '&adultno=1&childno=0&direction=A&frecce=false&onlyRegional=false';
 
-          //let proxy = 'https://cors-anywhere.herokuapp.com/';
-          //this.myUrl = proxy + this.myUrl;
           const PROXY = window.location.hostname === "localhost"
             ? "https://cors-anywhere.herokuapp.com"
             : "/cors-proxy";
-
-          // fetch(`${PROXY}/https://theverge.com/path/to/story...`)
-          //   .then(...)
 
           axios
             .get(`${PROXY}/`+this.myUrl)
@@ -148,13 +153,25 @@ export default {
                         dettaglio_treno: x.trainlist[0].trainidentifier,
               }))
             })
-            // .then(response => {
-            //   (this.info = response)
-            // })
+            
+            this.urlStazione = 'http://www.viaggiatreno.it/viaggiatrenonew/resteasy/viaggiatreno/partenze/S04733/Fri%20Jan%2029%202021%2015:58:25%20GMT+0100';
 
-          // console.log(this.info.data[0].duration)
+            axios
+              .get(`${PROXY}/`+this.urlStazione)
+              .then(result => {
+                this.infoStazione = result.data;
+                this.itemStazione = this.infoStazione.map(y => ({
+                    destinazione: y.destinazione,
+                    orario: y.orarioPartenza,
+                    numeroTreno: y.numeroTreno
+
+                }));
+                console.log(this.infoStazione);
+              })
+
 
         }
+
         
 
     },
