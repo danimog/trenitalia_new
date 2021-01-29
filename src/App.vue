@@ -104,7 +104,17 @@ export default {
         { value: 'Riomaggiore', text: 'Riomaggiore' },
         { value: 'La Spezia Centrale', text: 'La Spezia Centrale' },
       ],
+      infoStazioni: [
+        { value: 'S04731', text: 'Levanto' },
+        { value: 'S04732', text: 'Monterosso' },
+        { value: 'S04733', text: 'Vernazza' },
+        { value: 'S04734', text: 'Corniglia' },
+        { value: 'S04735', text: 'Manarola' },
+        { value: 'S04736', text: 'Riomaggiore' },
+        { value: 'S06000', text: 'La Spezia Centrale' },
+      ],
       now: null,
+      nowgmt: null,
       adate: null,
       atime: null,
       myUrl: '',
@@ -123,12 +133,13 @@ export default {
   methods:{
     onSubmit(event) {
         event.preventDefault()
-
+        
         if (this.form.stazione_arrivo == this.form.stazione_partenza){
           alert ("seleziona due stazioni differenti!");
         }
         else{
           this.now = Date.now();
+          this.nowgmt = new Date(this.now);
           this.adate = this.dateConverter(this.now);
           this.atime = this.timeConverter(this.now);
 
@@ -153,8 +164,8 @@ export default {
                         dettaglio_treno: x.trainlist[0].trainidentifier,
               }))
             })
-            
-            this.urlStazione = 'http://www.viaggiatreno.it/viaggiatrenonew/resteasy/viaggiatreno/partenze/S04733/Fri%20Jan%2029%202021%2015:58:25%20GMT+0100';
+            let vernazza = 'S04733'
+            this.urlStazione = 'http://www.viaggiatreno.it/viaggiatrenonew/resteasy/viaggiatreno/partenze/'+vernazza+'/'+this.nowgmt;
 
             axios
               .get(`${PROXY}/`+this.urlStazione)
@@ -166,7 +177,7 @@ export default {
                     numeroTreno: y.numeroTreno
 
                 }));
-                console.log(this.infoStazione);
+                
               })
 
 
