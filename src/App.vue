@@ -144,7 +144,7 @@ export default {
         }
         else{
           this.now = Date.now();
-          this.nowgmt = new Date(this.now);
+          
           this.adate = this.dateConverter(this.now);
           this.atime = this.timeConverter(this.now);
 
@@ -183,6 +183,7 @@ export default {
     },
     onChange(){
       console.log("------> "+this.myStazione);
+      this.nowgmt = new Date(this.now);
       this.urlStazione = 'http://www.viaggiatreno.it/viaggiatrenonew/resteasy/viaggiatreno/partenze/'+this.myStazione+'/'+this.nowgmt;
       const MYPROXY = window.location.hostname === "localhost"
         ? "https://cors-anywhere.herokuapp.com"
