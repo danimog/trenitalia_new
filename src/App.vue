@@ -38,7 +38,7 @@
         </b-container>
       </b-form>
       <div class="center">
-        <!-- <div class="mt-3">richiesta: <strong>{{ this.info }}</strong></div>   -->
+        
         <span class="h5 mb-3">
           Da: {{ this.form.stazione_partenza }} a: {{ this.form.stazione_arrivo }}<br> <br>          
         </span>
@@ -129,9 +129,15 @@ export default {
 
           //let proxy = 'https://cors-anywhere.herokuapp.com/';
           //this.myUrl = proxy + this.myUrl;
+          const PROXY = window.location.hostname === "localhost"
+            ? "https://cors-anywhere.herokuapp.com"
+            : "/cors-proxy";
+
+          // fetch(`${PROXY}/https://theverge.com/path/to/story...`)
+          //   .then(...)
 
           axios
-            .get(this.myUrl)
+            .get(`${PROXY}/`+this.myUrl)
             .then(res => {
               this.info = res.data;
               this.items = this.info.map(x => ({
